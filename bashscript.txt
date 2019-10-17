@@ -1,0 +1,22 @@
+#bashrc
+#export http_proxy=http://192.168.100.100:3128
+#export https_proxy=http://192.168.100.100:3128
+export PATH=$PATH:$HOME/zoho/script
+set-title(){
+  ORIG=$PS1
+  if [[ "$@" != "" ]]; then
+     TITLE="\e]2;$@\a"
+  else
+     TITLE="\e]2;${PWD##*/}\a"
+  fi
+  PS1=${ORIG}${TITLE}
+}
+alias grunt='./node_modules/grunt-cli/bin/grunt'
+# This will run before any command is executed.
+function PreCommand() {
+  if [[ "$BASH_COMMAND" == "hg update -C" ]]; then
+        echo "executing preCommand ... $BASH_COMMAND"
+        sh ~/zoho/script/crm-hg-copy-files.sh
+  fi
+}
+trap "PreCommand" DEBUG
